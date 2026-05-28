@@ -6,16 +6,16 @@
  * @author Andreas Gohr <andi@splitbrain.org>
  */
 
-$meta['translations']  = array('string','_pattern' => '/^(|[a-zA-Z\- ,]+)$/');
-//$meta['translationns'] = array('string','_pattern' => '/^(|[\w:\-]+)$/'); # currently broken
-$meta['skiptrans']     = array('string');
-$meta['dropdown']      = array('onoff');
-$meta['display']       = array('multicheckbox',
-                               '_choices' => array('langcode','name','flag','title'));
-$meta['translateui']   = array('onoff');
-$meta['redirectstart'] = array('onoff');
-$meta['checkage']      = array('onoff');
-$meta['about']         = array('string','_pattern' => '/^(|[\w:\-]+)$/');
-$meta['localabout']    = array('onoff');
-$meta['copytrans']     = array('onoff');
-$meta['show_path']     = array('onoff');
+$meta['translations']  = ['string', '_pattern' => '/^(|[a-zA-Z\- ,]+)$/'];
+//$meta['translationns'] = ['string', '_pattern' => '/^(|[\w:\-]+)$/']; // currently broken
+$meta['skiptrans']     = ['string'];
+$meta['dropdown']      = ['onoff'];
+$meta['display']       = ['multicheckbox',
+                          '_choices' => ['langcode', 'name', 'flag', 'title']];
+$meta['translateui']   = ['onoff'];
+$meta['redirectstart'] = ['onoff'];
+$meta['checkage']      = ['onoff'];
+$meta['about']         = ['string', '_pattern' => '/^(|[\w:\-]+)$/'];
+$meta['localabout']    = ['onoff'];
+$meta['copytrans']     = ['onoff'];
+$meta['show_path']     = ['onoff'];

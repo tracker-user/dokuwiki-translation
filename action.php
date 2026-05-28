@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('DOKU_INC')) die();
+
 use dokuwiki\Extension\ActionPlugin;
 use dokuwiki\Extension\EventHandler;
 use dokuwiki\Extension\Event;
@@ -102,7 +104,7 @@ class action_plugin_translation extends ActionPlugin
         for ($i = 0; $i < $count; $i++) {
             if (
                 array_key_exists('src', $event->data['script'][$i]) &&
-                strpos($event->data['script'][$i]['src'], '/lib/exe/js.php') !== false
+                str_contains($event->data['script'][$i]['src'], '/lib/exe/js.php')
             ) {
                 $event->data['script'][$i]['src'] .= '&lang=' . hsc($conf['lang']);
             }
@@ -213,6 +215,7 @@ class action_plugin_translation extends ActionPlugin
     public function handlePageTemplates(Event $event)
     {
         global $ID;
+        global $INPUT;
 
         // load orginal content as template?
         if ($this->getConf('copytrans') && $this->helper->istranslatable($ID, false)) {
@@ -220,7 +223,7 @@ class action_plugin_translation extends ActionPlugin
             $translations = $this->helper->getAvailableTranslations($ID);
             if ($translations) {
                 // find original language (might've been provided via parameter or use first translation)
-                $orig = (string)$_REQUEST['fromlang'];
+                $orig = $INPUT->str('fromlang');
                 if (!$orig) $orig = array_key_first($translations);
 
                 // load file

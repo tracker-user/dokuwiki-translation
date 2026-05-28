@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('DOKU_INC')) die();
+
 use dokuwiki\Extension\AdminPlugin;
 
 /**
@@ -34,7 +36,7 @@ class admin_plugin_translation extends AdminPlugin
 
         echo "<h1>" . $this->getLang("menu") . "</h1>";
         echo "<table id='outdated_translations' class=\"inline\">";
-        echo "<tr><th>default: $default_language</th>";
+        echo "<tr><th>default: " . hsc($default_language) . "</th>";
         if ($this->getConf('show_path')) {
             echo "<th>" . $this->getLang('path') . "</th>";
         }
@@ -42,7 +44,7 @@ class admin_plugin_translation extends AdminPlugin
             if ($t === $default_language) {
                 continue;
             }
-            echo "<th>$t</th>";
+            echo "<th>" . hsc($t) . "</th>";
         }
         echo "</tr>";
 
@@ -73,9 +75,8 @@ class admin_plugin_translation extends AdminPlugin
                     $translfn = wikiFN($translID);
                     if ($page['mtime'] > filemtime($translfn)) {
                         $class = "outdated";
-                        $difflink = " <a href='";
-                        $difflink .= $helper->getOldDiffLink($page["id"], $page['mtime']);
-                        $difflink .= "'>(diff)</a>";
+                        $olddiff = $helper->getOldDiffLink($page["id"], $page['mtime']);
+                        $difflink = $olddiff ? " <a href='" . hsc($olddiff) . "'>(diff)</a>" : '';
                         $title = $this->getLang('old');
                         $showRow = true;
                     } else {

@@ -1,8 +1,7 @@
-# General Plugin Info do not edit
 base   translation
-author Andreas Gohr
+author Andreas Gohr, TrackerUser
 email  andi@splitbrain.org
-date   2025-05-20
-name   Translation Plugin
-desc   Supports the easy setup of a multi-language wiki.
-url    https://www.dokuwiki.org/plugin:translation
+date   2077-05-20
+name   Translation
+desc   Supports the easy setup of a multi-language wiki (local fork — Update suppressed)
+url    https://github.com/tracker-user/dokuwiki-translation.git

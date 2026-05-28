@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('DOKU_INC')) die();
+
 use dokuwiki\Extension\Plugin;
 use dokuwiki\ChangeLog\PageChangeLog;
 
@@ -23,8 +25,6 @@ class helper_plugin_translation extends Plugin
     public function __construct()
     {
         global $conf;
-        require_once(DOKU_INC . 'inc/pageutils.php');
-        require_once(DOKU_INC . 'inc/utf8.php');
 
         $this->loadTranslationNamespaces();
 
@@ -56,6 +56,8 @@ class helper_plugin_translation extends Plugin
 
     /**
      * Parse 'translations'-setting into $this->translations
+     *
+     * @return void
      */
     public function loadTranslationNamespaces()
     {
@@ -96,16 +98,19 @@ class helper_plugin_translation extends Plugin
     /**
      * Returns the browser language if it matches with one of the configured
      * languages
+     *
+     * @return string|false
      */
     public function getBrowserLang()
     {
         global $conf;
+        global $INPUT;
         $langs = $this->translations;
         if (!in_array($conf['lang'], $langs)) {
             $langs[] = $conf['lang'];
         }
         $rx = '/(^|,|:|;|-)(' . implode('|', $langs) . ')($|,|:|;|-)/i';
-        if (preg_match($rx, $_SERVER['HTTP_ACCEPT_LANGUAGE'], $match)) {
+        if (preg_match($rx, $INPUT->server->str('HTTP_ACCEPT_LANGUAGE'), $match)) {
             return strtolower($match[2]);
         }
         return false;
@@ -163,7 +168,7 @@ class helper_plugin_translation extends Plugin
         global $ACT;
 
         if ($checkact && (!isset($ACT) || act_clean($ACT) != 'show')) return false;
-        if ($this->translationNs && strpos($id, (string) $this->translationNs) !== 0) return false;
+        if ($this->translationNs && !str_starts_with($id, $this->translationNs)) return false;
         $skiptrans = trim($this->getConf('skiptrans'));
         if ($skiptrans && preg_match('/' . $skiptrans . '/ui', ':' . $id)) return false;
         $meta = p_get_metadata($id);
@@ -260,9 +265,9 @@ class helper_plugin_translation extends Plugin
     }
 
     /**
-     * Return the local name
+     * Return the local name for the given language code
      *
-     * @param $lang
+     * @param string $lang
      * @return string
      */
     public function getLocalName($lang)
@@ -335,7 +340,7 @@ class helper_plugin_translation extends Plugin
         // compare modification times
         [$orig, ] = $this->buildTransID($this->defaultlang, $idpart);
         $origfn = wikiFN($orig);
-        if ($INFO['lastmod'] >= @filemtime($origfn)) return;
+        if ($INFO['lastmod'] >= (file_exists($origfn) ? filemtime($origfn) : 0)) return;
 
         // build the message and display it
         $orig = cleanID($orig);
@@ -368,9 +373,8 @@ class helper_plugin_translation extends Plugin
                 break;
             }
         }
-        if ($orev && !page_exists($id, $orev)) {
-            return false;
-        }
+        if (!$orev) return false;
+        if (!page_exists($id, $orev)) return false;
         $id = cleanID($id);
         return wl($id, ['do' => 'diff', 'rev' => $orev]);
     }
